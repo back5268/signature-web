@@ -1,5 +1,5 @@
 import { Application, Approve } from './admin/approval';
-import { DetailNewz, DetailPermission, New, Permission, Response, Template } from './admin/config';
+import { DetailNewz, DetailPermission, DetailTemplate, New, Permission, Response, Template } from './admin/config';
 import { DashBoard } from './admin/dashboard';
 import { Department, DetailJobPosition, DetailEmployee, DetailPosition, JobPosition, Employee, Position } from './admin/human-resource';
 import { ApprovedPayslip, Bonus, PendingPayslip, PendingzPayslip, Preview, Salary, SalaryCalculation } from './admin/payroll';
@@ -51,6 +51,7 @@ export const routes = [
   { path: '/permission/create', element: DetailPermission, layout: true },
   { path: '/permission/detail/:_id', element: DetailPermission, layout: true },
   { path: '/template', element: Template, layout: true },
+  { path: '/cam-ket/:slug', element: DetailTemplate },
   { path: '/response', element: Response, layout: true },
   { path: '/reflect', element: Response, layout: true },
   { path: '/new', element: New, layout: true },

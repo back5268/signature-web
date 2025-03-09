@@ -1,11 +1,13 @@
-import { getListTemplateApi, updateTemplateApi } from '@api';
-import { DataTable, FormList, DataFilter, UserBody, TimeBody } from '@components/base';
+import { deleteTemplateApi, getListTemplateApi, updateTemplateApi } from '@api';
+import { DataTable, FormList, DataFilter, TimeBody } from '@components/base';
 import { Columnz, Inputzz } from '@components/core';
 import { useGetParams } from '@hooks';
 import { useGetApi } from '@lib/react-query';
 import React, { useState } from 'react';
 import { DetailTemplate } from './Detail';
+import { Link } from 'react-router-dom';
 
+export * from './DetailV2';
 export const Template = () => {
   const initParams = useGetParams();
   const [params, setParams] = useState(initParams);
@@ -33,12 +35,13 @@ export const Template = () => {
         baseActions={['create', 'detail', 'delete']}
         setShow={setOpen}
         actionsInfo={{
-          onViewDetail: (item) => setOpen(item._id)
+          onViewDetail: (item) => setOpen(item._id),
+          deleteApi: deleteTemplateApi
         }}
         headerInfo={{ onCreate: () => setOpen(true) }}
         statusInfo={{ changeStatusApi: updateTemplateApi }}
       >
-        <Columnz header="Tiêu đề" field="title" />
+        <Columnz header="Tiêu đề" body={e => <Link target='_blank' className='text-primary' to={`/cam-ket/${e.slug}`}>{e.title}</Link>} />
         <Columnz header="Thời gian cập nhật" body={(e) => TimeBody(e.createdAt)} />
         <Columnz header="Thời gian tạo" body={(e) => TimeBody(e.updatedAt)} />
       </DataTable>
