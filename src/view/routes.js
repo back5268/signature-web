@@ -51,7 +51,7 @@ export const routes = [
   { path: '/permission/create', element: DetailPermission, layout: true },
   { path: '/permission/detail/:_id', element: DetailPermission, layout: true },
   { path: '/template', element: Template, layout: true },
-  { path: '/cam-ket/:slug', element: DetailTemplate },
+  { path: '/cam-ket/:slug', element: DetailTemplate, public: true },
   { path: '/response', element: Response, layout: true },
   { path: '/reflect', element: Response, layout: true },
   { path: '/new', element: New, layout: true },
