@@ -1,0 +1,5 @@
+export * from './ApprovedPayslip'
+export * from './PendingPayslip'
+export * from './PendingzPayslip'
+export * from './Salary'
+export * from './Preview'
