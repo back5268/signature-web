@@ -49,6 +49,32 @@ const App = () => {
         const isPublicRoute = route.public;
         const checkPermission = isPublicRoute || ['admin'].includes(userInfo?.role) ? true : toolz.includes(route.path);
 
+        if (route.path?.includes('cam-ket/'))
+          return (
+            <Route
+              key={index}
+              path={route.path}
+              element={
+                <DefaultLayout>
+                  <route.element />
+                </DefaultLayout>
+              }
+            />
+          );
+
+        if (route.path?.includes('phan-hoi'))
+          return (
+            <Route
+              key={index}
+              path={route.path}
+              element={
+                <DefaultLayout>
+                  <route.element />
+                </DefaultLayout>
+              }
+            />
+          );
+
         if (isPublicRoute && isAuthenticated) {
           return <Route key={index} path={route.path} element={<Navigate to="/" />} />;
         }

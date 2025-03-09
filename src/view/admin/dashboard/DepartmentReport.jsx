@@ -3,7 +3,6 @@ import { Cardz, Columnz, Tablez } from "@components/core";
 export const DepartmentReport = ({ data = [] }) => {
   return (
     <Cardz className="w-full h-full py-8">
-      <h2 className="font-bold uppercase leading-normal mb-4 text-primary">Báo cáo nhân sự theo phòng ban</h2>
       <hr className="mb-4" />
       <Tablez value={data} rows={100} dataKey="_id" paginatorTemplate="" rowsPerPageOptions={[100]} params={{ page: 1, limit: 100 }}>
         <Columnz header="#" body={(data, options) => options.rowIndex + 1} />

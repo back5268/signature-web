@@ -1,20 +1,20 @@
-import { deleteResponseApi, getListResponseApi } from '@api';
+import { deleteReflectApi, getListReflectApi } from '@api';
 import { DataTable, FormList, DataFilter, TimeBody } from '@components/base';
 import { Calendarzz, Columnz } from '@components/core';
-import { DocumentMagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useGetParams } from '@hooks';
 import { useGetApi } from '@lib/react-query';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-export * from './Detail'
-export const Response = () => {
+export * from './Detail';
+export const Reflect = () => {
   const initParams = useGetParams();
   const [params, setParams] = useState(initParams);
   const [filter, setFilter] = useState({});
-  const { isLoading, data } = useGetApi(getListResponseApi, params, 'response');
+  const { isLoading, data } = useGetApi(getListReflectApi, params, 'reflect');
 
   return (
-    <FormList title="Dữ liệu thu thập">
+    <FormList title="Thông tin phản ánh">
       <DataFilter setParams={setParams} filter={filter} setFilter={setFilter} className="lg:w-6/12">
         <Calendarzz
           selectionMode="range"
@@ -32,18 +32,18 @@ export const Response = () => {
         total={data?.total}
         params={params}
         setParams={setParams}
-        baseActions={['delete']}
+        baseActions={['delete', 'create']}
+        headerInfo={{ onCreate: () => window.open(`/phan-hoi`, '_blank') }}
         actionsInfo={{
-          moreActions: [
-            {
-              icon: DocumentMagnifyingGlassIcon,
-              onClick: (item) => window.open(`/phan-hoi/${item?._id}`, '_blank')
-            }
-          ],
-          deleteApi: deleteResponseApi
+          deleteApi: deleteReflectApi
         }}
       >
-        <Columnz header="Tiêu đề" field="template.title" />
+        <Columnz header="Nội dung" field="content" />
+        <Columnz header="File đính kèm" body={e => {
+          return <div className='flex flex-col gap-1'>
+            {e.images.map(i => <Link to={i} target="_blank" className='text-primary'>{i}</Link>)}
+          </div>
+        }} />
         <Columnz header="Thời gian cập nhật" body={(e) => TimeBody(e.createdAt)} />
         <Columnz header="Thời gian tạo" body={(e) => TimeBody(e.updatedAt)} />
       </DataTable>

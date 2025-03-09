@@ -55,27 +55,28 @@ export const DashBoard = () => {
               label="Khoảng thời gian (*)"
               value={filter.dates}
               onChange={(e) => setFilter({ ...filter, dates: e.value })}
+              className="lg:w-6/12"
             />
-            <Dropdownzz
+            {/* <Dropdownzz
               value={filter.department}
               onChange={(e) => setFilter({ ...filter, department: e.target.value })}
               options={departments}
               label="Phòng ban"
               showClear
               filter
-            />
+            /> */}
           </DataFilter>
         </Cardz>
       </div>
-      <div className="w-full lg:pr-3 py-4 lg:w-8/12">
+      {/* <div className="w-full lg:pr-3 py-4 lg:w-8/12">
         <DepartmentReport data={data?.departments} isLoading={isLoading} />
-      </div>
+      </div> */}
       <div className="w-full lg:pl-3 py-4 lg:w-4/12">
         <DoughnutChart data={data?.accounts} isLoading={isLoading} />
       </div>
-      <div className="w-full lg:pr-3 py-4 lg:w-8/12">
+      {/* <div className="w-full lg:pr-3 py-4 lg:w-8/12">
         <Attendance data={data?.attendances} isLoading={isLoading} />
-      </div>
+      </div> */}
       <div className="w-full lg:pl-3 py-4 lg:w-4/12">
         <PieChart data={data?.applications} isLoading={isLoading} />
       </div>
