@@ -22,7 +22,7 @@ const today = new Date();
 const INITPARAMS = {
   dates: [
     new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7),
-    new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+    new Date(today.getFullYear(), today.getMonth(), today.getDate())
   ]
 };
 export const DashBoard = () => {
@@ -72,7 +72,7 @@ export const DashBoard = () => {
         <PieChart data={data?.applications} isLoading={isLoading} />
       </div> */}
       <div className="w-full py-4">
-        <ComboChart data={data?.details} isLoading={isLoading} templates={templates} />
+        <ComboChart data={data?.details} isLoading={isLoading} templates={templates} params={handleParams(params)} />
       </div>
     </div>
   );

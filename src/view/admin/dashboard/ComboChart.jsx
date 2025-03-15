@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
-import { formatDate } from '@lib/helper';
-import { Cardz } from '@components/core';
+import { formatDate, removeSpecialCharacter } from '@lib/helper';
+import { Buttonz, Cardz } from '@components/core';
 import { themeColor } from '@theme';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { exportReflectApi, exportResponseApi } from '@api';
 
-export const ComboChart = ({ data = [], templates }) => {
+export const ComboChart = ({ data = [], templates, params = {} }) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [chartOptions, setChartOptions] = useState({});
+
+  const onExport = async (exportApi = () => {}, title = '') => {
+    const response = await exportApi(params);
+    if (response) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(response);
+      downloadLink.download = (title && `ket-qua-export-${removeSpecialCharacter(title)}.xlsx`) || 'data.xlsx';
+      downloadLink.click();
+      showToast({ title: `Export ${title?.toLowerCase()} thành công!`, severity: 'success' });
+    }
+  };
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -79,7 +92,27 @@ export const ComboChart = ({ data = [], templates }) => {
 
   return (
     <Cardz className="w-full h-full py-8">
-      <h2 className="font-bold uppercase leading-normal mb-4 text-primary">Báo cáo chi tiết</h2>
+      <div className="w-full flex justify-between items-center mb-4 text-center">
+        <h2 className="font-bold uppercase leading-normal text-primary">Báo cáo chi tiết</h2>
+        <div className="flex gap-2 items-center">
+          <Buttonz
+            severity="success"
+            onClick={() => onExport(exportResponseApi, "cam kết")}
+            className="flex gap-4 items-center"
+            icon={<ArrowDownTrayIcon className="h-5 w-5 stroke-2" />}
+          >
+            Export cam kết
+          </Buttonz>
+          <Buttonz
+            severity="success"
+            onClick={() => onExport(exportReflectApi, "phản ánh")}
+            className="flex gap-4 items-center"
+            icon={<ArrowDownTrayIcon className="h-5 w-5 stroke-2" />}
+          >
+            Export phản ánh
+          </Buttonz>
+        </div>
+      </div>
       <hr className="mb-4" />
       <Chart type="line" data={chartData || {}} options={chartOptions || {}} />
     </Cardz>
