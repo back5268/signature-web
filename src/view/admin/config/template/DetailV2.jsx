@@ -14,7 +14,10 @@ export const DetailTemplate = () => {
   return (
     <div className="w-full flex justify-center">
       <EditorV2
-        data={item?.content?.replace('$date', today.format('DD'))?.replace('$month', today.format('MM'))}
+        data={item?.content
+          ?.replace('$date', today.format('DD'))
+          ?.replace('$month', today.format('MM'))
+          ?.replace('$year', today.format('YYYY'))}
         setData={(e) => setInfos((pre) => ({ ...pre, content: e }))}
         slug={slug}
       />
