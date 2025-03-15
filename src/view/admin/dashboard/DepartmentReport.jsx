@@ -4,6 +4,7 @@ export const DepartmentReport = ({ data = [], templates }) => {
   
   return (
     <Cardz className="w-full h-full py-8">
+      <h2 className="font-bold uppercase leading-normal mb-4 text-primary">Báo cáo số lượng ký cam kết</h2>
       <hr className="mb-4" />
       <Tablez value={data?.map(d => {
         const datum = templates?.find(t => t._id === d.template)
