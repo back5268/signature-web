@@ -10,9 +10,17 @@ export const DataFilter = (props) => {
   useEffect(() => {
     const query = {};
     const queryParams = new URLSearchParams(search);
+    const dates = [];
     for (let [key, value] of queryParams.entries()) {
+      if (key === 'from') {
+        dates[0] = new Date(value);
+      }
+      if (key === 'to') {
+        dates[1] = new Date(value);
+      }
       query[key] = Number(value) || Number(value) === 0 ? Number(value) : value;
     }
+    if (dates[0] && dates[1]) query['dates'] = dates
     setFilter((pre) => ({ ...pre, ...query, page: undefined, limit: undefined }));
   }, [search]);
 

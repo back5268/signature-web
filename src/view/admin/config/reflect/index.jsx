@@ -5,13 +5,14 @@ import { useGetParams } from '@hooks';
 import { useGetApi } from '@lib/react-query';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { handleParams } from '..';
 
 export * from './Detail';
 export const Reflect = () => {
   const initParams = useGetParams();
   const [params, setParams] = useState(initParams);
   const [filter, setFilter] = useState({});
-  const { isLoading, data } = useGetApi(getListReflectApi, params, 'reflect');
+  const { isLoading, data } = useGetApi(getListReflectApi, handleParams(params), 'reflect');
 
   return (
     <FormList title="Thông tin phản ánh">

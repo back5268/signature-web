@@ -3,18 +3,17 @@ import { Attendance } from './Attendance';
 import { DoughnutChart } from './DoughnutChart';
 import { ComboChart } from './ComboChart';
 import { PieChart } from './PieChart';
-import { getDataDashboardApi } from '@api';
+import { getDataDashboardApi, getListTemplateInfoApi } from '@api';
 import { useState } from 'react';
-import { DepartmentReport } from './DepartmentReport';
 import { Calendarzz, Cardz, Dropdownzz } from '@components/core';
 import { databaseDate } from '@lib/helper';
-import { useDataState } from '@store';
 import { DataFilter } from '@components/base';
+import { DepartmentReport } from './DepartmentReport';
 
 const handleParams = (params) => {
   if (Array.isArray(params.dates) && params.dates.length > 0) {
-    params.fromDate = databaseDate(params.dates[0]);
-    params.toDate = params.dates[1] ? databaseDate(params.dates[1], false, true) : databaseDate(params.dates[0], false, true);
+    params.from = databaseDate(params.dates[0]);
+    params.to = params.dates[1] ? databaseDate(params.dates[1], false, true) : databaseDate(params.dates[0], false, true);
   }
   return { ...params, page: undefined, limit: undefined, dates: undefined };
 };
@@ -22,7 +21,7 @@ const handleParams = (params) => {
 const today = new Date();
 const INITPARAMS = {
   dates: [
-    new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
+    new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7),
     new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
   ]
 };
@@ -30,7 +29,7 @@ export const DashBoard = () => {
   const [params, setParams] = useState(INITPARAMS);
   const [filter, setFilter] = useState(INITPARAMS);
   const { data, isLoading } = useGetApi(getDataDashboardApi, handleParams(params), 'dashboard');
-  const { departments } = useDataState();
+  const { data: templates } = useGetApi(getListTemplateInfoApi, {}, 'templates');
   const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() - 1);
 
@@ -57,31 +56,23 @@ export const DashBoard = () => {
               onChange={(e) => setFilter({ ...filter, dates: e.value })}
               className="lg:w-6/12"
             />
-            {/* <Dropdownzz
-              value={filter.department}
-              onChange={(e) => setFilter({ ...filter, department: e.target.value })}
-              options={departments}
-              label="Phòng ban"
-              showClear
-              filter
-            /> */}
           </DataFilter>
         </Cardz>
       </div>
-      {/* <div className="w-full lg:pr-3 py-4 lg:w-8/12">
-        <DepartmentReport data={data?.departments} isLoading={isLoading} />
-      </div> */}
+      <div className="w-full lg:pr-3 py-4 lg:w-8/12">
+        <DepartmentReport data={data?.responses} isLoading={isLoading} templates={templates} />
+      </div>
       <div className="w-full lg:pl-3 py-4 lg:w-4/12">
-        <DoughnutChart data={data?.accounts} isLoading={isLoading} />
+        <DoughnutChart data={data?.reflects} isLoading={isLoading} />
       </div>
       {/* <div className="w-full lg:pr-3 py-4 lg:w-8/12">
         <Attendance data={data?.attendances} isLoading={isLoading} />
       </div> */}
-      <div className="w-full lg:pl-3 py-4 lg:w-4/12">
+      {/* <div className="w-full lg:pl-3 py-4 lg:w-4/12">
         <PieChart data={data?.applications} isLoading={isLoading} />
-      </div>
+      </div> */}
       <div className="w-full py-4">
-        <ComboChart data={data?.timekeepings} isLoading={isLoading} />
+        <ComboChart data={data?.details} isLoading={isLoading} templates={templates} />
       </div>
     </div>
   );

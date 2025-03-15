@@ -6,3 +6,4 @@ export const detailTemplateWebApi = (params) => getData('/info/detailTemplate', 
 export const deleteTemplateApi = (params) => deleteData('/web/template/deleteTemplate', params);
 export const createTemplateApi = (params) => postData('/web/template/createTemplate', params);
 export const updateTemplateApi = (params) => putData('/web/template/updateTemplate', params);
+export const getListTemplateInfoApi = (params) => getData('/info/getListTemplate', params);

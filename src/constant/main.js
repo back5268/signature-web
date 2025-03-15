@@ -16,6 +16,11 @@ export const genders = [
   { name: 'Khác', _id: 3 }
 ];
 
+export const reflexTypes = [
+  { name: 'Phản ánh có hình ảnh', _id: 1 },
+  { name: 'Phản ánh không hình ảnh', _id: 2 },
+];
+
 export const employeeTypes = [
   { name: 'Nhân viên chính thức', _id: 1 },
   { name: 'Nhân viên thử việc', _id: 2 },
