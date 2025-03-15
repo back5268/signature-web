@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import parse from 'html-react-parser';
 import { renderToString } from 'react-dom/server';
+import moment from 'moment';
 
 const EditableField = ({ id, initialValue, width, onUpdate }) => {
   const [value, setValue] = useState(initialValue);
@@ -99,12 +100,18 @@ export const EditorV2 = ({ data = '', setData = () => {}, slug }) => {
     `;
     setSignature(imgTag);
     const content = convertToHtml();
-    const response = await createResponseApi({ slug, content: removeEmptyElements(content?.replace('$ky_ten', imgTag)) });
+    const response = await createResponseApi({
+      slug,
+      content: removeEmptyElements(content?.replace('$ky_ten', imgTag))
+    });
     if (response) {
       showToast({ title: 'Gửi phản hồi thành công', severity: 'success' });
       setShowModal(false);
     }
   };
+
+  console.log(editableData);
+  
 
   const convertToHtml = () => {
     let idCounter = 0;
@@ -122,7 +129,7 @@ export const EditorV2 = ({ data = '', setData = () => {}, slug }) => {
       const filler = firstChar.repeat(sideChars); // Chuỗi ký tự giống với ký tự trong match
 
       return `${filler}${value}${filler}`; // Kết hợp chuỗi dấu và nội dung nhập
-    });
+    })?.replace('$ho_ten', editableData[0].replace(/^\.+|\.+$/g, '').trim());
   };
 
   return (
