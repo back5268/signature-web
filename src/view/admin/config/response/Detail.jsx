@@ -8,7 +8,9 @@ export const DetailResponse = () => {
   const { data: item } = useGetApi(detailResponseApi, { _id }, 'responsez');
   return (
     <div className="w-full flex justify-center">
-      <div dangerouslySetInnerHTML={{ __html: item?.content }} />
+      <div className="max-w-[1200px]">
+        <div dangerouslySetInnerHTML={{ __html: item?.content }} />
+      </div>
     </div>
   );
 };

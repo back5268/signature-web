@@ -1,12 +1,11 @@
 import { createResponseApi } from '@api';
 import { useToastState } from '@store';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import parse from 'html-react-parser';
-import { renderToString } from 'react-dom/server';
-import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
-const EditableField = ({ id, initialValue, width, onUpdate }) => {
+const EditableField = ({ id, initialValue, width, onUpdate, sub }) => {
   const [value, setValue] = useState(initialValue);
   const handleChange = (e) => {
     setValue(e.target.value);
@@ -16,6 +15,29 @@ const EditableField = ({ id, initialValue, width, onUpdate }) => {
     onUpdate(id, value); // Cập nhật dữ liệu vào state của App
   };
 
+  if (sub)
+    return (
+      <div>
+        {sub || ''}
+        <input
+          type="text"
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          autoFocus
+          style={{
+            border: 'none',
+            outline: 'none',
+            fontSize: 'inherit',
+            fontFamily: 'inherit',
+            background: 'transparent',
+            padding: 0,
+            margin: '4px',
+            width: width ? width : 'auto'
+          }}
+        />
+      </div>
+    );
   return (
     <input
       type="text"
@@ -37,14 +59,13 @@ const EditableField = ({ id, initialValue, width, onUpdate }) => {
   );
 };
 
-export const EditorV2 = ({ data = '', setData = () => {}, slug }) => {
-  const [dataz, setDataz] = useState('');
+export const EditorV2 = ({ data = '', slug }) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedSpan, setSelectedSpan] = useState(null);
   const [signature, setSignature] = useState(''); // Ảnh chữ ký
   const sigCanvas = useRef(null); // Tham chiếu đến canvas vẽ chữ ký
   const { showToast } = useToastState();
   const [editableData, setEditableData] = useState({});
+  const navigate = useNavigate();
 
   const handleUpdate = (id, value) => {
     setEditableData((prev) => ({ ...prev, [id]: value }));
@@ -54,15 +75,14 @@ export const EditorV2 = ({ data = '', setData = () => {}, slug }) => {
     let idCounter = 0;
     return parse(htmlString, {
       replace: (domNode) => {
-        const isFull = domNode?.data?.match(/[…．。・•·‥‧⋯︙︰︵︶]+/g);
-        if (domNode.type === 'text' && (isFull || domNode.data.includes('.....'))) {
+        if (domNode.type === 'text' && (domNode.data.includes('.....'))) {
           const id = idCounter++;
           return (
             <EditableField
               id={id}
-              initialValue={editableData[id] || domNode.data.trim()}
+              initialValue={editableData[id] || domNode.data.trim().replace(/[^.]/g, '.')}
               onUpdate={handleUpdate}
-              width={isFull ? '100%' : undefined}
+              sub={domNode.data.trim().replaceAll('.', '')}
             />
           );
         }
@@ -76,13 +96,8 @@ export const EditorV2 = ({ data = '', setData = () => {}, slug }) => {
   function removeEmptyElements(htmlString) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
-
-    // Duyệt qua tất cả các thẻ <p>
     doc.body.querySelectorAll('p, span, strong, em, div').forEach((el) => {
-      // Lấy nội dung văn bản của phần tử (bao gồm khoảng trắng)
       const text = el.innerHTML.replace(/&nbsp;/g, '').trim();
-
-      // Nếu rỗng sau khi loại bỏ &nbsp; => Xóa phần tử
       if (!text) {
         el.remove();
       }
@@ -105,31 +120,31 @@ export const EditorV2 = ({ data = '', setData = () => {}, slug }) => {
       content: removeEmptyElements(content?.replace('$ky_ten', imgTag))
     });
     if (response) {
+      navigate(`/phan-hoi/${response?._id}`);
       showToast({ title: 'Gửi phản hồi thành công', severity: 'success' });
       setShowModal(false);
     }
   };
 
-  console.log(editableData);
-  
-
   const convertToHtml = () => {
     let idCounter = 0;
-    return data?.replace(/[…．。・•·‥‧⋯︙︰︵︶]+|(\.{5,})/g, (match) => {
-      const id = idCounter++;
-      let value = editableData[id]
-        ? editableData[id].replace(/^\.+|\.+$/g, '').trim() // Loại bỏ dấu . ở đầu và cuối
-        : '';
+    return data
+      ?.replace(/[…．。・•·‥‧⋯︙︰︵︶]+|(\.{5,})/g, (match) => {
+        const id = idCounter++;
+        let value = editableData[id]
+          ? editableData[id].replace(/^\.+|\.+$/g, '').trim() // Loại bỏ dấu . ở đầu và cuối
+          : '';
 
-      if (!value) return match; // Nếu không có dữ liệu nhập, giữ nguyên `match`
+        if (!value) return match; // Nếu không có dữ liệu nhập, giữ nguyên `match`
 
-      const firstChar = match[0]; // Lấy ký tự đầu tiên trong match (để xác định loại dấu)
-      const totalLength = match.length - 20; // Độ dài gốc của chuỗi ký tự đặc biệt
-      const sideChars = Math.max(1, Math.floor((totalLength - value.length) / 2)); // Số ký tự cần chèn hai bên
-      const filler = firstChar.repeat(sideChars); // Chuỗi ký tự giống với ký tự trong match
+        const firstChar = match[0]; // Lấy ký tự đầu tiên trong match (để xác định loại dấu)
+        const totalLength = match.length - 20; // Độ dài gốc của chuỗi ký tự đặc biệt
+        const sideChars = Math.max(1, Math.floor((totalLength - value.length) / 2)); // Số ký tự cần chèn hai bên
+        const filler = firstChar.repeat(sideChars); // Chuỗi ký tự giống với ký tự trong match
 
-      return `${filler}${value}${filler}`; // Kết hợp chuỗi dấu và nội dung nhập
-    })?.replace('$ho_ten', editableData[0].replace(/^\.+|\.+$/g, '').trim());
+        return `${filler}${value}${filler}`; // Kết hợp chuỗi dấu và nội dung nhập
+      })
+      ?.replace('$ho_ten', editableData[0].replace(/^\.+|\.+$/g, '').trim());
   };
 
   return (

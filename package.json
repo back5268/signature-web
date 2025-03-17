@@ -20,6 +20,8 @@
     "ckeditor5": "^43.1.1",
     "dotenv": "^16.4.5",
     "html-react-parser": "^5.2.2",
+    "jodit": "^4.5.17",
+    "jodit-react": "^5.2.15",
     "moment": "^2.30.1",
     "primeflex": "^3.3.1",
     "primereact": "^10.8.3",

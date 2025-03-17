@@ -13,6 +13,7 @@ export const DetailTemplate = () => {
 
   return (
     <div className="w-full flex justify-center">
+      <div className='max-w-[1200px]'>
       <EditorV2
         data={item?.content
           ?.replace('$date', today.format('DD'))
@@ -21,6 +22,7 @@ export const DetailTemplate = () => {
         setData={(e) => setInfos((pre) => ({ ...pre, content: e }))}
         slug={slug}
       />
+      </div>
     </div>
   );
 };
